@@ -6,7 +6,7 @@ router.post('/', async (req, res) => {
   try {
     const { base64Image } = req.body;
     const cartoonImage = await cartoonifyImage(base64Image);
-    res.json({ cartoonImage });
+    res.json({ image_url: cartoonUrl }); // <--- 💥 Hier passiert die "Antwort"
   } catch (err) {
     console.error('❌ Fehler bei cartoonify:', err);
     res.status(500).json({ error: 'Fehler bei Cartoonify' });
@@ -14,3 +14,7 @@ router.post('/', async (req, res) => {
 });
 
 module.exports = router;
+
+
+
+res.json({ image_url: cartoonUrl }); // oder output_url
