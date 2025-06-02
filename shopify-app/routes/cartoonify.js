@@ -15,6 +15,3 @@ router.post('/', async (req, res) => {
 
 module.exports = router;
 
-
-
-res.json({ image_url: cartoonUrl }); // oder output_url
