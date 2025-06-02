@@ -3,17 +3,12 @@ const router = express.Router();
 const { cartoonifyImage } = require('../services/imageService');
 
 router.post('/', async (req, res) => {
-  const { image } = req.body;
-
-  if (!image) {
-    return res.status(400).json({ error: 'Kein Bild empfangen' });
-  }
-
   try {
+    const { image } = req.body; // 🟢 ACHTUNG: nicht base64Image – dein Frontend sendet `image`
     const cartoonUrl = await cartoonifyImage(image);
-    res.json({ image_url: cartoonUrl });
+    res.json({ image_url: cartoonUrl }); // ✅ Korrekt: cartoonUrl ist der Rückgabewert
   } catch (err) {
-    console.error('❌ Fehler bei cartoonify:', err.message);
+    console.error('❌ Fehler bei cartoonify:', err);
     res.status(500).json({ error: 'Fehler bei Cartoonify' });
   }
 });
