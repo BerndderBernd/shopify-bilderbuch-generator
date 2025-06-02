@@ -3,64 +3,40 @@ import PageEditor from './PageEditor';
 import PreviewModal from './PreviewModal';
 import { generateStoryText } from '../services/textService';
 
+
 const BookEditor = () => {
-  const [pages, setPages] = useState([{ image: '', text: '', cartoonImage: '' }]);
-  const [showPreview, setShowPreview] = useState(false);
+  const [imageUrl, setImageUrl] = useState(null);
 
-  const addPage = () => {
-    setPages([...pages, { image: '', text: '', cartoonImage: '' }]);
-  };
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-  const updatePage = (index, data) => {
-    const newPages = [...pages];
-    newPages[index] = { ...newPages[index], ...data };
-    setPages(newPages);
-  };
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const base64Image = reader.result.split(',')[1];
 
-  const exportToPDF = async () => {
-    const res = await fetch('http://localhost:5000/api/export/pdf', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ pages, title: 'Mein Bilderbuch' }),
-    });
+      try {
+        const response = await axios.post(
+          'https://DEIN-BACKEND.onrender.com/api/cartoonify',
+          { image: base64Image }
+        );
 
-    const blob = await res.blob();
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'Bilderbuch.pdf');
-    document.body.appendChild(link);
-    link.click();
+        // Achtung: Nutze das, was dein Backend **tatsächlich zurückgibt**
+        console.log('Cartoonify Antwort:', response.data);
+        setImageUrl(response.data.image_url || response.data.output_url);
+      } catch (err) {
+        console.error('❌ Cartoonify Fehler:', err.response?.data || err.message);
+        alert('Cartoonisierung fehlgeschlagen');
+      }
+    };
+
+    reader.readAsDataURL(file);
   };
 
   return (
     <div>
-      {pages.map((page, index) => (
-        <PageEditor
-          key={index}
-          index={index}
-          page={page}
-          onUpdate={(data) => updatePage(index, data)}
-        />
-      ))}
-
-      <div className="flex gap-4 mt-6">
-        <button onClick={addPage} className="bg-green-600 text-white px-4 py-2 rounded">
-          ➕ Neue Seite
-        </button>
-
-        <button onClick={() => setShowPreview(true)} className="bg-blue-600 text-white px-4 py-2 rounded">
-          📖 Vorschau
-        </button>
-
-        <button onClick={exportToPDF} className="bg-black text-white px-4 py-2 rounded">
-          📥 Als PDF exportieren
-        </button>
-      </div>
-
-      {showPreview && (
-        <PreviewModal pages={pages} onClose={() => setShowPreview(false)} />
-      )}
+      <input type="file" accept="image/*" onChange={handleImageUpload} />
+      {imageUrl && <img src={imageUrl} alt="Cartoonisiertes Bild" style={{ maxWidth: '100%' }} />}
     </div>
   );
 };
