@@ -1,12 +1,8 @@
-const API_BASE = 'https://shopify-bilderbuch-generator.onrender.com'
-
-export async function convertImageToCartoon(base64Image) {
-  const res = await fetch(`${API_BASE}/api/image-transform`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ image: base64Image })
-  })
-  return await res.json()
-}
+const cartoonifyImage = async (base64Image) => {
+  const response = await axios.post(
+    'https://api.deepai.org/api/toonify',
+    { image: base64Image },
+    { headers: { 'Api-Key': process.env.DEEP_AI_KEY } }
+  );
+  return response.data.output_url; // ✅ Das ist cartoonUrl oben
+};
