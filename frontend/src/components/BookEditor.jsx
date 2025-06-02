@@ -2,8 +2,6 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import PageEditor from './PageEditor';
 import PreviewModal from './PreviewModal';
-import { generateStoryText } from '../services/textService';
-import { cartoonifyImage } from '../services/imageService';
 
 const BookEditor = () => {
   const [imageUrl, setImageUrl] = useState(null);
@@ -22,9 +20,8 @@ const BookEditor = () => {
           { image: base64Image }
         );
 
-        // Achtung: Nutze das, was dein Backend **tatsächlich zurückgibt**
-        console.log('Cartoonify Antwort:', response.data);
-        setImageUrl(response.data.image_url || response.data.output_url);
+        console.log('✅ Cartoonify Antwort:', response.data);
+        setImageUrl(response.data.image_url); // ✅ image_url ist das was vom Backend zurückkommt
       } catch (err) {
         console.error('❌ Cartoonify Fehler:', err.response?.data || err.message);
         alert('Cartoonisierung fehlgeschlagen');
