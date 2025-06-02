@@ -1,6 +1,7 @@
-import React, { useState } from '../services/textService';
+import React, { useState } from 'react';
 import PageEditor from './PageEditor';
 import PreviewModal from './PreviewModal';
+import { generateStoryText } from '../services/textService';
 
 const BookEditor = () => {
   const [pages, setPages] = useState([{ image: '', text: '', cartoonImage: '' }]);
