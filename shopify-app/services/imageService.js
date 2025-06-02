@@ -1,24 +1,24 @@
-const axios = require('axios');
+const express = require('express');
+const router = express.Router();
+const { cartoonifyImage } = require('../services/imageService');
 
-const cartoonifyImage = async (base64Image) => {
+router.post('/', async (req, res) => {
   try {
-    const response = await axios.post(
-      'https://api.deepai.org/api/toonify',
-      {
-        image: base64Image,
-      },
-      {
-        headers: {
-          'Api-Key': process.env.DEEP_AI_KEY,
-        },
-      }
-    );
+    const { image } = req.body;
 
-    return response.data.output_url;
-  } catch (error) {
-    console.error('❌ DeepAI Fehler:', error.response?.data || error.message);
-    throw new Error('Cartoonify fehlgeschlagen');
+    if (!image) {
+      return res.status(400).json({ error: 'Kein Bild gesendet' });
+    }
+
+    const cartoonImage = await cartoonifyImage(image);
+
+    console.log('✅ Cartoon erstellt:', cartoonImage);
+
+    res.json({ image_url: cartoonImage }); // 🔥 Richtig zurückgeben
+  } catch (err) {
+    console.error('❌ Fehler bei cartoonify:', err.message);
+    res.status(500).json({ error: 'Fehler bei Cartoonify' });
   }
-};
+});
 
-module.exports = { cartoonifyImage };
+module.exports = router;
