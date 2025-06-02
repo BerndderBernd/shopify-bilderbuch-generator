@@ -17,7 +17,7 @@ const BookEditor = () => {
 
       try {
         const response = await axios.post(
-          'https://DEIN-BACKEND.onrender.com/api/cartoonify',
+          'https://shopify-bilderbuch-generator.onrender.com/api/cartoonify',
           { image: base64Image }
         );
 
