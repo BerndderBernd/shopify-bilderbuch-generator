@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PageEditor from './PageEditor';
 import PreviewModal from './PreviewModal';
 import { generateStoryText } from '../services/textService';
-
+import { cartoonifyImage } from '../services/imageService';
 
 const BookEditor = () => {
   const [imageUrl, setImageUrl] = useState(null);
