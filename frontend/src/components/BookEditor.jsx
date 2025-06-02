@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from '../services/textService';
 import PageEditor from './PageEditor';
 import PreviewModal from './PreviewModal';
 
